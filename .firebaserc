@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "apptaxi-92fbc": {
+      "hosting": {
+        "app": [
+          "apptaxi-92fbc"
+        ]
+      }
+    }
+  }
+}

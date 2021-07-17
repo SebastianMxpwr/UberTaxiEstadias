@@ -1,0 +1,88 @@
+ion-header{
+    ion-toolbar{
+      --background:#6d00af;
+    }
+  }
+body{
+    margin-top: 0px;
+    margin-bottom:0px;
+    margin-left: 0px;
+    margin-right: 0px;
+}
+ion-content{
+    --background:#f6f6ed;
+    
+}
+#todoalv{
+    font-family: 'Amaranth', sans-serif;
+
+    #perfil_picture{
+        text-align: center;
+        position: relative;
+        top: 20px;
+        img{
+            border-radius: 100%;
+            width:200px;
+            height:200px;
+        }
+    }
+    
+    #personal_data{
+        margin-top: 50px;
+        font-size: 20px;
+        h2{
+            color: #080908;
+            text-align: center;
+        }
+    
+        .personal_data_input{
+            --background:rgba(255, 1, 1, 0);
+            color: #090808; 
+            margin:10px;
+            border: solid 3px rgb(202, 202, 202) ;
+            border-radius: 15px;
+
+            ion-input{
+                font-family: 'Amaranth', sans-serif;
+                font-size: 18px;
+            }
+    
+            ion-label{
+                --color:#090808;
+                
+            }
+        }
+    }
+    
+    #auto_data{
+        margin-top: 50px;
+        font-size: 20px;
+        h2{
+            color: #080908;
+            text-align: center;
+        }
+    
+        .auto_data_input{
+            --background:rgba(255, 1, 1, 0);
+            color: #090808; 
+            margin:10px;
+            border: solid 3px rgb(202, 202, 202) ;
+            border-radius: 15px;
+
+            ion-input{
+                font-family: 'Amaranth', sans-serif;
+                font-size: 18px;
+            }
+    
+            ion-label{
+                --color:#090808;
+                
+            }
+        }
+    }
+    
+    ion-label{
+        color:#090808;
+        margin:10px;
+    }
+}

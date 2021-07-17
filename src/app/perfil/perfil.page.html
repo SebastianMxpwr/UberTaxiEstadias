@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button><ion-icon name="arrow-back-circle"></ion-icon></ion-back-button>
+    </ion-buttons>
+    <ion-title align="center">Perfil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+<div id="todoalv">
+  <div id="svg_top">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+      <path fill="#ffd700" fill-opacity="1" d="M0,256L24,245.3C48,235,96,213,144,208C192,203,240,213,288,213.3C336,213,384,203,432,165.3C480,128,528,64,576,80C624,96,672,192,720,229.3C768,267,816,245,864,213.3C912,181,960,139,1008,154.7C1056,171,1104,245,1152,261.3C1200,277,1248,235,1296,213.3C1344,192,1392,192,1416,192L1440,192L1440,0L1416,0C1392,0,1344,0,1296,0C1248,0,1200,0,1152,0C1104,0,1056,0,1008,0C960,0,912,0,864,0C816,0,768,0,720,0C672,0,624,0,576,0C528,0,480,0,432,0C384,0,336,0,288,0C240,0,192,0,144,0C96,0,48,0,24,0L0,0Z"></path>
+    </svg>
+  </div>
+  <div id="perfil_picture">
+    <img src="../../assets/img/photo-300x300.png">
+  </div>
+  <div id="personal_data">
+    <h2> Datos Personales</h2>
+
+    <ion-label position="fixed">Correo:</ion-label>
+    <ion-item  class="personal_data_input" lines="none">
+      <ion-input disabled="true">{{fs.userData.data().email}}</ion-input>
+    </ion-item>
+
+    <ion-label position="fixed">Nombre:</ion-label>
+    <ion-item  class="personal_data_input" lines="none">
+      <ion-input disabled="true">{{fs.userData.data().displayName}}</ion-input>
+    </ion-item>
+  </div>
+  <br>
+  <div id="auto_data">
+    <h2>Datos del automovil</h2>
+    
+    <ion-label position="fixed">Matricula:</ion-label>
+    <ion-item  class="auto_data_input" lines="none">
+      <ion-input disabled="true">12345AB</ion-input>
+    </ion-item>
+
+    <ion-label position="fixed" >Serial</ion-label>
+    <ion-item  class="auto_data_input" lines="none">
+      <ion-input disabled="true">1234567890:</ion-input>
+    </ion-item>
+  </div>
+</div>
+</ion-content>
