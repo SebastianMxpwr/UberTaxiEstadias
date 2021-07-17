@@ -1,5 +1,7 @@
 {
   "name": "prueba_maps",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

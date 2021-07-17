@@ -1,20 +1,77 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+<ion-menu side="end" menuId="first" contentId="firstid">
+  <ion-content id="menu">
+  <div class="menu-header-bg">Menu</div>
+  <div class="header-content">
+    <ion-label>
+      <h2>Recaudado</h2>
+      <h1>${{total}}</h1>
+    </ion-label>
   </div>
+    <ion-list class="menu-items" lines="none">
+      <ion-menu-toggle>
+        <ion-item routerLink="/historial"><ion-icon name="albums" slot="start"></ion-icon>Historial de viajes</ion-item>
+      </ion-menu-toggle>
+      <ion-menu-toggle>
+        <ion-item routerLink="/perfil"><ion-icon name="person-circle" slot="start"></ion-icon>Perfil</ion-item>
+      </ion-menu-toggle>
+    </ion-list>
+    <div class="action-button">
+      <ion-button routerLink="">
+        <ion-icon slot="start" name="log-out" ></ion-icon>
+        Salir
+      </ion-button>
+    </div>
+  </ion-content>
+</ion-menu>
+<ion-router-outlet id="firstid"></ion-router-outlet>
+
+<ion-content [fullscreen]=true >
+  <div #map id="map_canvas" [ngStyle]="{'height': tra.status ? '100%': '90%'}">
+  </div>
+ 
+  <div class="bottom" *ngIf="!tra.status">
+    <ion-button id="connect_bottom" (click)="getTravels()" *ngIf="fs.travelsData.length == 0 " >Conectar</ion-button>
+  </div>
+
+  <div class="cancel" *ngIf="tra.CRI == true">
+    <ion-button id="button_cancel_map_ready" (click)="cancelTravelReady()">Cancelar</ion-button>
+  </div>
+
+  <div id="gps_full">
+    <ion-button id="button_position_marker"(click)=" PosistionActualMarker()"><ion-icon name="navigate"></ion-icon></ion-button>
+    <ion-button id="button_menu" slot="end" (click)="openFirst()"><ion-icon name="menu"></ion-icon></ion-button>
+    <ion-button id="button_go_map_ready" (click)="comenzarTravel()" *ngIf="tra.CRD == true">Comenzar</ion-button>
+    <ion-button id="button_final" (click)="terminarViaje()" *ngIf="tra.final == true && tra.CRD == false">Terminar</ion-button>
+  </div>
+
+    <div id="info_travel_intial" *ngIf="tra.destinationI">
+      <p>El usuario esta a: </p>
+      <h2>{{tra.distanceI}}, {{tra.durationI}}</h2>
+      <p>En: </p>
+      <p class="p_info">{{tra.destinationI}}</p>
+    </div>
+
+  <div id="info_travel_destination" *ngIf="tra.destinationD">
+    <p>Destino a: </p>
+    <h2>{{tra.distanceD}}, {{tra.durationD}}</h2>
+    <p>En: </p>
+    <p class="p_info">{{tra.destinationD}}</p>
+  </div>
+  
+<ion-content  id="table_pasajeros" *ngIf="fs.travelsData.length != 0 ">
+    <table *ngFor="let viaje of this.fs.travelsData">
+      <tr>
+        <td colspan=2><img src="../../assets/img/photo-300x300.png" style="width: 60px; height: 60px;"></td>
+      </tr>
+      <tr>
+        <td>Costo:{{viaje.data.cost}}</td>
+        <td>Distancia:{{viaje.data.distance}}</td>
+      </tr>
+      <tr>
+        <td colspan=2><ion-button fill="outline"  id="pasajeros_boton_aceptar" (click)="accept(viaje.data)"><ion-icon name="checkmark-done"></ion-icon></ion-button></td>
+      </tr>
+    </table>
+  <ion-button id="pasajeros_boton_cancelar" (click)="cancelTravelPosibility()"><ion-icon name="close"></ion-icon></ion-button>
+</ion-content >
 </ion-content>
+

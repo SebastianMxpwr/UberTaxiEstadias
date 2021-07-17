@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button><ion-icon name="arrow-back-circle"></ion-icon></ion-back-button>
+    </ion-buttons>
+    <ion-title></ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div id="final_Price">
+    <h3>Pepe debe:</h3>
+    <h1>{{fs.travelData.data().cost}} Pesos</h1>
+  </div>
+  <div id="final_button">
+    <ion-button routerLink="/home" (click)="finishTravel()">Finalizar Viaje<ion-icon name="golf" slot="end"></ion-icon></ion-button>
+  </div>
+
+</ion-content>

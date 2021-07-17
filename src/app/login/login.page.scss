@@ -1,0 +1,68 @@
+.login{
+    position: relative;
+    top: 50%;
+    text-align: center;
+    font-family: 'Amaranth', sans-serif;;
+    background-attachment: fixed;
+    .Titulo{
+        color:#080908;
+        text-align: center;
+    }
+    #password{
+        border-radius: 25px;
+        margin: 10px;
+        .password{
+            border: 1px solid rgb(156, 156, 156);
+            border-radius: 25px;
+        } 
+    }
+    #email{
+        border-radius: 25px;
+        margin: 10px;
+        .email{
+            border: 1px solid rgb(156, 156, 156);
+            border-radius: 25px;
+        }
+    }
+    #boton_login{
+        --border-radius: 10px;
+        width: 200px;
+        height: 50px;
+        font-size: 20px;
+        --background: #6d00af;
+    }
+}
+
+.inputs{
+    --background: #ffff;
+    font-size: 20px;
+    color: #080908;
+}
+ion-icon{
+    padding-right: 10px;
+}
+#top_black{
+    background: #080908;
+    position: absolute;
+    width: 100%;
+    height: 380px;
+}
+#top_yellow{
+    background: #FFF856;
+    height: 100px;
+    position: relative;
+    width: 100%;
+    height: 380px;
+    clip-path: polygon(100% 0, 0 0, 0 100%);    
+}
+
+#taxi{
+    position:absolute;
+    z-index: 1;
+    width: 40%;
+    height: 40%;
+    left: 30%;
+    background-attachment: fixed
+}
+
+

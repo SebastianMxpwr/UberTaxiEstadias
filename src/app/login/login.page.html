@@ -1,0 +1,28 @@
+<ion-content>
+  <img  id="taxi" src="../../assets/img/taxi.png" >
+  <div id="top_black">
+    <div id="top_yellow"></div>
+  </div>
+  <div class="login">
+    <div class="Titulo">
+      <h1>Listo para trabajar?</h1>
+    </div>
+    <form>
+      <div class="email">
+        <ion-item class="inputs" id="email">
+          <ion-input placeholder="ID" #email required><ion-icon  name="mail"></ion-icon></ion-input>
+        </ion-item>
+      </div>
+      <div class="password">
+        <ion-item class="inputs" id="password">
+          <ion-input placeholder="Contraseña" type="password" #password required><ion-icon name="finger-print"></ion-icon></ion-input>
+        </ion-item>
+      </div> 
+      <ion-button id="boton_login" type="submit" (click)="Onlogin(email,password)"> 
+        Ingresar
+        <ion-icon slot="end" name="arrow-forward-circle"></ion-icon>
+      </ion-button>
+    </form>
+  </div>
+</ion-content>
+

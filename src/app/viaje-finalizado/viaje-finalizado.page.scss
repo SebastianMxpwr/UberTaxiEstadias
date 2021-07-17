@@ -1,0 +1,42 @@
+ion-header{
+    ion-toolbar{
+      --background:#f7f310;
+
+    }
+}
+
+ion-content{
+    --background:#f7f310;
+    text-align: center;
+
+    #final_Price{
+        margin: 5%;
+        height: 60%;
+        background:#6d00af;
+        font-family: 'Amaranth', sans-serif;
+        border-radius: 25px;
+        
+
+        h1{
+            font-size: 130px;
+        }
+
+        h3{
+            font-size: 40px;
+        }
+    }
+
+    #final_button{
+        position: relative;
+        top:8%;
+        ion-button{
+            --border-radius: 25px;
+            font-family: 'Amaranth', sans-serif;
+            font-size:25px;
+            --background:#f71010;
+            height:80px;
+            width: 300px;
+        }
+    }
+
+}
