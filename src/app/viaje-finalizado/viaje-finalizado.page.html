@@ -8,12 +8,29 @@
 </ion-header>
 
 <ion-content>
-  <div id="final_Price">
+  <div id="final_Price"> 
     <h3>Pepe debe:</h3>
-    <h1>{{fs.travelData.data().cost}} Pesos</h1>
+    <h1>$ {{fs.currentTravelData.data().cost}}Pesos</h1>
   </div>
+
+  <div id="metodoPago">
+    <ion-radio-group ngModel="metodoPago" (ionChange)="checkPaymentMethod($event)">
+      <ion-item >
+        <ion-label><ion-icon name="cash-outline"></ion-icon>Efectivo</ion-label>
+        <ion-radio slot="start" value="Efectivo" ></ion-radio>
+      </ion-item>
+    
+      <ion-item>
+        <ion-label><ion-icon name="card-outline"></ion-icon>Tarjeta debito/credito</ion-label>
+        <ion-radio slot="start" value="Tarjeta" ></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </div>
+ 
   <div id="final_button">
     <ion-button routerLink="/home" (click)="finishTravel()">Finalizar Viaje<ion-icon name="golf" slot="end"></ion-icon></ion-button>
   </div>
+
+  
 
 </ion-content>

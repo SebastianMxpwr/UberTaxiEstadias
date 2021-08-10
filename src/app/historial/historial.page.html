@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button (click)="hiddenFunction()"><ion-icon name="arrow-back-circle"></ion-icon></ion-back-button>
+      <ion-back-button (click)="restartHistory()" color="light"><ion-icon name="arrow-back-circle"></ion-icon></ion-back-button>
     </ion-buttons>
     <ion-title align="center">Historial de viajes</ion-title>
   </ion-toolbar>
@@ -12,32 +12,13 @@
     <path fill="#ffd700" fill-opacity="1" d="M0,224L34.3,213.3C68.6,203,137,181,206,176C274.3,171,343,181,411,197.3C480,213,549,235,617,250.7C685.7,267,754,277,823,261.3C891.4,245,960,203,1029,202.7C1097.1,203,1166,245,1234,256C1302.9,267,1371,245,1406,234.7L1440,224L1440,0L1405.7,0C1371.4,0,1303,0,1234,0C1165.7,0,1097,0,1029,0C960,0,891,0,823,0C754.3,0,686,0,617,0C548.6,0,480,0,411,0C342.9,0,274,0,206,0C137.1,0,69,0,34,0L0,0Z"></path>
   </svg>
   <h1>Tu historial</h1>
-  <div class="tbl-header">
-    <table cellpadding="0" cellspacing="0" border="0">
-      <thead>
-        <tr>
-          <th>Pasajero</th>
-          <th>Destino</th>
-          <th>Inicio</th>
-          <th>Distancia</th>
-          <th>Precio</th>
-        </tr>
-      </thead>
-    </table>
-  </div>
-  <div class="tbl-content">
-    <table cellpadding="0" cellspacing="0" border="0" *ngFor="let history of this.fs.history">
-      <tbody>
-        <tr>
-          <td></td>
-          <td>{{history.data.destino}} </td>
-          <td>{{history.data.initial}}</td>
-          <td>{{history.data.distance}}</td>
-          <td>{{history.data.cost}}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
+  <ion-card *ngFor="let viaje of fs.history">
+    <ion-card-header >
+      <ion-card-title>id: {{viaje.data.history_uid}}</ion-card-title>
+      <ion-card-subtitle>Pasajero: Pepe</ion-card-subtitle> 
+      <ion-card-subtitle>Destino: {{viaje.data.destination.Lugar}}</ion-card-subtitle>
+    </ion-card-header>
+    <ion-button routerLink="/detalle-historial" (click)="sendInfo(viaje)"><ion-icon name="arrow-forward-circle" slot="end"></ion-icon>info</ion-button>
+  </ion-card>
 </ion-content>
 

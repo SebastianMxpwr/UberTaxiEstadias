@@ -13,16 +13,16 @@ export class TravelsService {
   directionsService
   matrixServices
   coordinates =[]
-  status
-  durationD
-  distanceD
-  destinationD
-  durationI
-  distanceI
-  destinationI
+  status: any
+  durationD: string
+  durationI: string
+  distanceD: string
+  distanceI: string
+  destinationD: string
+  destinationI: string
   CRI = false
   CRD = false
-  final = false
+  endTravel = false
   constructor(private geo:GeolocationService) { 
     this.directionsDisplay = this.geo.directionsDisplay
     this.directionsService = this.geo.directionsService
@@ -56,7 +56,7 @@ export class TravelsService {
           this.status = status
           if (this.status === google.maps.DirectionsStatus.OK) {
             this.directionsDisplay.setDirections(response);
-            this.final = true
+            this.endTravel = true
           } else {
             alert('Could not display directions due to: ' + status);
           }
@@ -66,7 +66,7 @@ export class TravelsService {
     
      calculateDistanceInitial(data: Travels){
       this.matrixServices.getDistanceMatrix({
-        origins:[this.geo.currentCenter],
+        origins:[this.geo.currentCenter], // necesitan ser un array
         destinations:[data.initial],
         travelMode: 'DRIVING',
         unitSystem: google.maps.UnitSystem.METRIC
@@ -97,4 +97,7 @@ export class TravelsService {
         }
       })     
     }
+
+    
+    
 }

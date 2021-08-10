@@ -27,6 +27,10 @@ const routes: Routes = [
     loadChildren: () => import('./viaje-finalizado/viaje-finalizado.module').then( m => m.ViajeFinalizadoPageModule)
   },
   {
+    path: 'detalle-historial',
+    loadChildren: () => import('./detalle-historial/detalle-historial.module').then( m => m.DetalleHistorialPageModule)
+  },
+  {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full'

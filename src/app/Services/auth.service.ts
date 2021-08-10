@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {Users} from '../Models/users'
+import { Users } from '../Models/users'
 import { AngularFireAuth } from '@angular/fire/auth'
 import { FireService } from '../Services/fire.service'
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore'
