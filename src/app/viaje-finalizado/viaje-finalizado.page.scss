@@ -1,42 +1,67 @@
-ion-header{
-    ion-toolbar{
-      --background:#f7f310;
-
-    }
+ion-header {
+  ion-toolbar {
+    --background: #c2bf09;
+  }
 }
 
-ion-content{
-    --background:#f7f310;
-    text-align: center;
+ion-content {
+  --background: #a75c5c;
+  text-align: center;
 
-    #final_Price{
-        margin: 5%;
-        height: 60%;
-        background:#6d00af;
-        font-family: 'Amaranth', sans-serif;
-        border-radius: 25px;
-        
+  #final_Price {
+    margin: 5%;
+    height: 40%;
+    background: #520085;
+    font-family: "Amaranth", sans-serif;
+    border-radius: 25px;
 
-        h1{
-            font-size: 130px;
-        }
-
-        h3{
-            font-size: 40px;
-        }
+    h1 {
+      font-size: 65px;
+      color: #fff;
     }
 
-    #final_button{
-        position: relative;
-        top:8%;
-        ion-button{
-            --border-radius: 25px;
-            font-family: 'Amaranth', sans-serif;
-            font-size:25px;
-            --background:#f71010;
-            height:80px;
-            width: 300px;
-        }
+    h3 {
+      font-size: 40px;
+      padding: 20px;
+      color: #fff;
     }
+  }
 
+  #metodoPago {
+    ion-item {
+      --background: #520085;
+      margin-top: 2%;
+      margin-left: 5%;
+      margin-right: 5%;
+      --border-radius: 18px;
+      ion-label {
+        font-family: "Amaranth", sans-serif;
+        font-size: 20px;
+        ion-icon {
+          margin-right: 10px;
+          font-size: 25px;
+        }
+      }
+      ion-radio {
+        --color-checked: rgb(247, 247, 48);
+      }
+    }
+  }
+
+  #final_button {
+    position: relative;
+    top: 8%;
+    ion-button {
+      --border-radius: 25px;
+      font-family: "Amaranth", sans-serif;
+      font-size: 25px;
+      --background: #1a80d3;
+      height: 80px;
+      width: 300px;
+    }
+  }
+
+  ion-label{
+    --color: #fff;
+  }
 }

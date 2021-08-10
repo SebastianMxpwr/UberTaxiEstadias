@@ -11,12 +11,17 @@ import { TravelsService } from '../Services/travels.service'
 })
 export class FireService {
 
-  public userData
-  public travelData
-  public travelsData = []
-  public history = []
-  constructor(private afs: AngularFirestore, private alert: AlertController, private tra: TravelsService ) {
-  }
+  userData
+  currentTravelData 
+  travelsData = []
+  history = []
+  info
+  connect
+  constructor(
+    private afs: AngularFirestore, 
+    private alert: AlertController, 
+    private tra: TravelsService,
+    ) {}
    
    async getCurrentUser(uid: string){
     this.userData = await this.afs.firestore.collection("users").doc(uid).get()
@@ -24,13 +29,13 @@ export class FireService {
     
   }
   async getCurrentTravel(uid: string){
-    this.travelData = await this.afs.firestore.collection("travels").doc(uid).get()
-    console.log(this.travelData.data());
+    this.currentTravelData = await this.afs.firestore.collection("travels").doc(uid).get()
+    console.log(this.currentTravelData.data());
     
     
   }
 
-  async getAllHistory(){ 
+  async getHistory(){ 
     this.afs.firestore.collection("history").where('uid_driver', '==', this.userData.data().uid )
     .get().then(async (querySnapshot)=>{
       querySnapshot.forEach((doc)=>{
@@ -54,27 +59,35 @@ export class FireService {
     })
   }
 
-   async getAllTravels(){
-     this.afs.firestore.collection("travels").where("available", "==", true)
-     .get().then(async (querySnapshot)=>{
-       querySnapshot.forEach((doc)=>{
-         this.travelsData.push({
-           uid: doc.id,
-           data: doc.data()
-         })
-       })       
-       if(this.travelsData.length == 0){
-        const alert = await this.alert.create({
-          cssClass: 'Alert-login-unsuccess',
-          header: 'Sin viajes',
-          message: 'Al parecer no hay viajes disponibles',
-          buttons: ['OK']
-        })
-        await alert.present()
-      }else{
-        console.log(this.travelsData);
-      } 
-     })
+   async connectToTravel(connection: boolean){
+     if(connection == true){
+      this.connect=this.afs.firestore.collection("travels").where("available", "==", true)
+       .onSnapshot(async (querySnapshot)=>{
+         this.travelsData = []
+         querySnapshot.forEach((doc)=>{
+           this.travelsData.push({
+             uid: doc.id,
+             data: doc.data()
+           })
+         })       
+         if(this.travelsData.length == 0 && connection == true){
+          const alert = await this.alert.create({
+            cssClass: 'Alert-login-unsuccess',
+            header: 'Sin viajes',
+            message: 'Al parecer no hay viajes disponibles',
+            buttons: ['OK']
+          })
+          await alert.present()
+        }else{
+          console.log(this.travelsData);
+        } 
+       })
+     }else if(connection == false){
+       this.connect()
+       this.travelsData.length = 0
+     }
+   
+    
   }
 
 
@@ -86,18 +99,22 @@ export class FireService {
     return travelRef.set(data,{merge:true})
   }
 
-   finishTravelAndUpdate(history: any){  
+   finishTravelAndUpdate(history: any, metodoPago){  
      const travelRef: AngularFirestoreDocument<History>= this.afs.doc(`history/${history.uid}`)
      const data: History={
-      uid: history.uid,
+      history_uid: history.uid,
       uid_driver: this.userData.data().uid,
       displayName_driver: this.userData.data().displayName,
-      initial: this.tra.destinationI,
-      destino: this.tra.destinationD,
-      distance: history.distance,
+      initial: {Lugar:this.tra.destinationI, Distancia: this.tra.distanceI, Tiempo: this.tra.durationI},
+      destination: {Lugar: this.tra.destinationD, Distancia: this.tra.distanceD, Tiempo: this.tra.durationD},
       cost: history.cost,
+      payment_method: metodoPago
     }
     console.log(data);
-    return travelRef.set(data,{merge:true})
+    return travelRef.set(data,{merge:false})
+  }
+
+  reciveInfo(info_viaje){
+    this.info = info_viaje
   }
 }

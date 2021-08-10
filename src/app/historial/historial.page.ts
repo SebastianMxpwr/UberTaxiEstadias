@@ -9,13 +9,19 @@ import { FireService } from '../Services/fire.service';
 })
 export class HistorialPage implements OnInit {
 
-  constructor(public fs: FireService) { }
+  historial = []
+  constructor(public fs: FireService) {this.historial = this.fs.history}
 
+  
   ngOnInit() {
-    this.fs.getAllHistory()
+    this.fs.getHistory()
   }
-  hiddenFunction(){
+  restartHistory(){
     this.fs.history.length = 0
+  }
+
+  sendInfo(viaje){
+    this.fs.reciveInfo(viaje)
   }
 
 }

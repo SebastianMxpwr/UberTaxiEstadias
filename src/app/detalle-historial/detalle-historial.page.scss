@@ -1,0 +1,43 @@
+ion-header {
+    text-align: center;
+    ion-toolbar {
+      --background: #6d00af;
+    }
+    ion-title {
+      color: #fff;
+    }
+  }
+
+  #detalle_info {
+    margin-top: 50px;
+    font-size: 20px;
+    .info{
+      border-radius: 15px;
+      border: solid 3px rgb(202, 202, 202);
+      margin-bottom: 18px;
+      margin-left: 7px;
+      margin-right: 5px;
+
+          .historial_data_input {
+            --background: rgba(255, 1, 1, 0);
+            color: #090808;
+            margin: 18px;
+            border: solid 3px rgb(202, 202, 202);
+            border-radius: 15px;
+      
+            ion-input {
+              font-family: "Amaranth", sans-serif;
+              font-size: 18px;
+            }
+      
+            ion-label {
+              --color: #090808;
+            }
+          }
+          ion-label {
+            color: #090808;
+            margin: 10px;
+          }
+    }
+  }
+  

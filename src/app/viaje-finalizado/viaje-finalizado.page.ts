@@ -11,16 +11,31 @@ import { TravelsService} from '../Services/travels.service'
 export class ViajeFinalizadoPage implements OnInit {
 
   travelData = {}
-  constructor(public fs: FireService, public tra: TravelsService) { }
+  metodoPago: string
+
+  constructor(public fs: FireService, public tra: TravelsService) {
+    this.metodoPago = "Efectivo"
+   }
   ngOnInit() {
   }
 
+  checkPaymentMethod($event){
+    this.metodoPago = $event.detail.value
+    console.log(this.metodoPago);  
+  }
+
+
   finishTravel(){
-    this.travelData = this.fs.travelData.data()
-    this.fs.finishTravelAndUpdate(this.travelData)
+    this.travelData = this.fs.currentTravelData.data()
+    this.fs.finishTravelAndUpdate(this.travelData, this.metodoPago)
     this.tra.destinationD = ''
     this.tra.destinationI = ''
-   
+    if(this.metodoPago === "Efectivo"){
+      console.log('efectivo');
+    }else{
+      console.log('tarjeta');
+      
+    }
   }
 
 }

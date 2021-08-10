@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Geolocation } from '@ionic-native/geolocation/ngx'
 import { LoadingController } from '@ionic/angular'
+
+
+
+
 declare var google
 
 @Injectable({
@@ -10,21 +14,34 @@ export class GeolocationService {
 
   public currentCenter: {}
   public map: any
-  lat: string
+  lat: string 
   lng: string
   zoom = 18
   actualCoordinates = []
-  marker
+  marker: any
   
   directionsService = new google.maps.DirectionsService()
   directionsDisplay = new google.maps.DirectionsRenderer()
   matrixServices = new google.maps.DistanceMatrixService()
 
-  constructor(private geolocation: Geolocation, private loading: LoadingController) { }
+  constructor(
+    private geolocation: Geolocation, 
+    private loading: LoadingController,) { }
+    
+    
 
    async loadMap(){
      const load = await this.loading.create()
      load.present()
+
+     
+      const rta = await this.geolocation.getCurrentPosition()
+      this.currentCenter={
+        lat: rta.coords.latitude,
+        lng: rta.coords.longitude
+      }
+    
+
       const mapEle: HTMLElement = document.getElementById('map_canvas')
       this.map= new google.maps.Map(mapEle,{
       center: this.currentCenter,
@@ -47,15 +64,7 @@ export class GeolocationService {
 
   }
 
-  async PosistionActual(){
-    const rta = await this.geolocation.getCurrentPosition()
-    this.currentCenter={
-      lat: rta.coords.latitude,
-      lng: rta.coords.longitude
-    }
-  }
-
-  PosistionActualMarker(){
+  actualPositionMarker(){
       if(!this.marker){
         this.marker = new google.maps.Marker({
           position: this.currentCenter,
@@ -69,10 +78,6 @@ export class GeolocationService {
       }     
   }
 
-  reloadMap(){
-    
-  }
-
   whatchPosition(){
     const watch = navigator.geolocation.watchPosition(position=>{
       this.currentCenter={
@@ -82,4 +87,18 @@ export class GeolocationService {
       console.log(this.currentCenter);
     })
   }
+
+  reloadMap(){
+    if(!this.map){
+      this.loadMap()
+      this.actualPositionMarker()
+    }else{
+      console.log('gud'); 
+    }
+  }
+
+  cleanMap(){
+    this.directionsDisplay.setDirections({routes:[]})
+  }
+
 }

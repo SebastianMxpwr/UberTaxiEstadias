@@ -16,7 +16,7 @@
       </ion-menu-toggle>
     </ion-list>
     <div class="action-button">
-      <ion-button routerLink="">
+      <ion-button routerLink="" (click)="auth.logout()">
         <ion-icon slot="start" name="log-out" ></ion-icon>
         Salir
       </ion-button>
@@ -41,7 +41,7 @@
     <ion-button id="button_position_marker"(click)=" PosistionActualMarker()"><ion-icon name="navigate"></ion-icon></ion-button>
     <ion-button id="button_menu" slot="end" (click)="openFirst()"><ion-icon name="menu"></ion-icon></ion-button>
     <ion-button id="button_go_map_ready" (click)="comenzarTravel()" *ngIf="tra.CRD == true">Comenzar</ion-button>
-    <ion-button id="button_final" (click)="terminarViaje()" *ngIf="tra.final == true && tra.CRD == false">Terminar</ion-button>
+    <ion-button id="button_final" (click)="terminarViaje()" *ngIf="tra.endTravel == true && tra.CRD == false">Terminar</ion-button>
   </div>
 
     <div id="info_travel_intial" *ngIf="tra.destinationI">
@@ -64,8 +64,8 @@
         <td colspan=2><img src="../../assets/img/photo-300x300.png" style="width: 60px; height: 60px;"></td>
       </tr>
       <tr>
-        <td>Costo:{{viaje.data.cost}}</td>
-        <td>Distancia:{{viaje.data.distance}}</td>
+        <td><ion-icon src="../../assets/icon/dollar-symbol.svg" size="small"></ion-icon>Costo:{{viaje.data.cost}}</td>
+        <td><ion-icon src="../../assets/icon/placeholder-filled-point.svg" size="small"></ion-icon>Distancia:{{viaje.data.distance}}</td>
       </tr>
       <tr>
         <td colspan=2><ion-button fill="outline"  id="pasajeros_boton_aceptar" (click)="accept(viaje.data)"><ion-icon name="checkmark-done"></ion-icon></ion-button></td>
