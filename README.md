@@ -1,59 +1,53 @@
 # Traslados
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.3.0.
+Demo de viaje en vivo entre un pasajero y un conductor. Es la app del conductor de las estadías de 2021 (sigue intacta en la rama `master`), rehecha aquí como primer paso de "Traslados".
 
-## Development server
+| Pasajero en camino | Conductor en viaje |
+|---|---|
+| ![Pasajero](docs/capturas/pasajero-en-camino.png) | ![Conductor](docs/capturas/conductor-en-curso.png) |
 
-To start a local development server, run:
+## Antes (`master`) y después (rama `traslados`)
 
-```bash
-ng serve
+| | Antes (2021) | Después |
+|---|---|---|
+| Stack | Angular 12, Ionic 5, Cordova 9, AngularFire 6 / Firebase 8 | Angular 22, Ionic 9, Capacitor 8 (solo `capacitor.config.ts`), Vitest, Playwright |
+| Mapa | Google Maps con la llave en el repo | MapLibre GL + OpenFreeMap, sin llaves |
+| Aceptar un viaje | Escritura directa: dos conductores podían tomar el mismo viaje | Transición validada y transaccional (`navigator.locks`): uno gana, el otro recibe "Este viaje ya lo tomó otro conductor" |
+| Si falla la ruta | El viaje se perdía | Las rutas viajan dentro del viaje y se precalculan (OSRM) |
+| Estados | Sin máquina de estados explícita | Máquina de estados pura y probada (`estado.ts`) |
+| Pruebas | Solo las pruebas de plantilla (Karma / Protractor) | 16 pruebas Vitest y 2 e2e de dos pestañas |
+
+## Cómo correrla
+
+```
+npm install
+npm start
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Abre `http://localhost:4200/pasajero` y `http://localhost:4200/conductor` en **dos pestañas del mismo navegador**, o en `/pasajero` activa el interruptor "Conductor simulado". Con `?vel=N` cada tramo (20 s) dura N veces menos.
 
-## Code scaffolding
+## Pruebas
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- `npm test`: Vitest, una sola corrida (máquina de estados, rutas y almacén).
+- `npm run e2e`: Playwright con el Chrome instalado (`channel: 'chrome'`; no hace falta `playwright install`). Levanta `ng serve --port 4310` y prueba, con dos o tres páginas en un mismo contexto, el viaje completo y la carrera de dos conductores aceptando a la vez.
+- `node e2e/capturas.mjs` (con `ng serve --port 4310` corriendo) regenera las capturas de `docs/capturas/`.
 
-```bash
-ng generate component component-name
-```
+## Arquitectura
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+- `src/app/viaje/estado.ts`: dominio puro (estados, `puedeIr`, `transicion`), sin Angular.
+- `AlmacenViajes` es una interfaz; el único adaptador es `AlmacenMemoria` (localStorage + BroadcastChannel + `storage` + `navigator.locks`).
+- Mapa con MapLibre GL y el estilo de OpenFreeMap; el worker de maplibre se copia a assets (ver `angular.json`).
+- Rutas OSRM precalculadas en `src/app/viaje/rutas-semilla.json` (`node scripts/generar-rutas.mjs` las regenera); la app nunca llama a OSRM.
+- Capacitor configurado, sin plataformas android/ios todavía.
 
-```bash
-ng generate --help
-```
+## Límites conocidos
 
-## Building
+- El estado vive en localStorage y crece con cada viaje; no se limpia.
+- Recargar la pestaña del conductor reinicia el tramo en curso desde su inicio.
+- El conductor simulado solo atiende el viaje de su propia pestaña.
+- localStorage es el almacén de una demo en un solo navegador: no sustituye a un servidor.
 
-To build the project run:
+## Pendiente
 
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Siguiente rebanada: adaptador de Firestore con reglas probadas en el emulador.
+- Fuera de alcance: push, invitaciones, cuentas y pagos.

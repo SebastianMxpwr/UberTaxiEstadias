@@ -22,6 +22,9 @@ export class AlmacenMemoria implements AlmacenViajes {
 
   constructor() {
     if (this.canal) this.canal.onmessage = () => this.oyentes.forEach((f) => f());
+    // BroadcastChannel puede llegar antes de que localStorage sea visible en esta pestaña;
+    // el evento `storage` solo se dispara cuando el valor ya se puede leer.
+    if (typeof addEventListener === 'function') addEventListener('storage', (e) => e.key === CLAVE && this.oyentes.forEach((f) => f()));
   }
 
   private leer(): Record<string, Viaje> {
