@@ -1,0 +1,58 @@
+rules_version = '2';
+
+// Sin Auth no se verifica QUIEN hace la transicion: eso lo valida el dominio (estado.ts) en el cliente.
+// Siguiente paso: Auth anonima del emulador y comparar con request.auth.uid.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /trips/{id} {
+      allow read: if true;
+      allow delete: if false;
+      allow create: if esViajeNuevo(request.resource.data);
+      allow update: if soloPosicion() || transicionValida();
+
+      function esViajeNuevo(d) {
+        return d.keys().hasOnly(['estado', 'pasajero', 'conductor', 'origen', 'destino', 'costo', 'rutaRecogida', 'rutaViaje', 'posicion', 'historial'])
+          && d.estado == 'solicitado'
+          && !('conductor' in d)
+          && d.historial.size() == 1
+          && d.costo is number && d.costo > 0
+          && d.pasajero is string;
+      }
+
+      function cambios() {
+        return request.resource.data.diff(resource.data).affectedKeys();
+      }
+
+      function soloPosicion() {
+        return cambios().hasOnly(['posicion']) && resource.data.estado in ['en_camino', 'en_curso'];
+      }
+
+      function parPermitido(de, a) {
+        return (de == 'solicitado' && a == 'aceptado')
+          || (de == 'aceptado' && a == 'en_camino')
+          || (de == 'en_camino' && a == 'en_curso')
+          || (de == 'en_curso' && a == 'terminado')
+          || (de in ['solicitado', 'aceptado', 'en_camino'] && a == 'cancelado');
+      }
+
+      // Solo al aceptar aparece el conductor; en cualquier otro paso no cambia.
+      function conductorValido(de, a) {
+        return (de == 'solicitado' && a == 'aceptado')
+          ? request.resource.data.conductor is string && !('conductor' in resource.data)
+          : request.resource.data.get('conductor', null) == resource.data.get('conductor', null);
+      }
+
+      function historialValido(a) {
+        return request.resource.data.historial.size() == resource.data.historial.size() + 1
+          && request.resource.data.historial[request.resource.data.historial.size() - 1].estado == a;
+      }
+
+      function transicionValida() {
+        return cambios().hasOnly(['estado', 'conductor', 'historial', 'posicion'])
+          && parPermitido(resource.data.estado, request.resource.data.estado)
+          && conductorValido(resource.data.estado, request.resource.data.estado)
+          && historialValido(request.resource.data.estado);
+      }
+    }
+  }
+}

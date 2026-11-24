@@ -1,5 +1,10 @@
 import { expect, test } from '@playwright/test';
 
+// Modo Firestore (playwright.firestore.config.ts): base limpia antes de cada prueba.
+test.beforeEach(async ({ request }) => {
+  if (process.env['E2E_FIRESTORE']) await request.delete('http://127.0.0.1:8080/emulator/v1/projects/demo-traslados/databases/(default)/documents');
+});
+
 test('pasajero pide, conductor acepta y completa; el coche se mueve', async ({ context }) => {
   const pas = await context.newPage();
   const con = await context.newPage();

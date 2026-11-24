@@ -58,6 +58,17 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "firestore": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.firestore.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -70,6 +81,9 @@
             },
             "development": {
               "buildTarget": "traslados:build:development"
+            },
+            "firestore": {
+              "buildTarget": "traslados:build:firestore"
             }
           },
           "defaultConfiguration": "development"

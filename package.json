@@ -7,7 +7,11 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test --no-watch",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "emuladores": "firebase emulators:start --only firestore --project demo-traslados",
+    "start:firestore": "ng serve --configuration firestore",
+    "test:reglas": "firebase emulators:exec --only firestore --project demo-traslados \"vitest run --config vitest.reglas.config.ts\"",
+    "e2e:firestore": "playwright test --config playwright.firestore.config.ts"
   },
   "private": true,
   "packageManager": "npm@12.0.1",
@@ -31,7 +35,9 @@
     "@angular/cli": "^22.3.0",
     "@angular/compiler-cli": "^22.3.0",
     "@capacitor/cli": "8.6",
+    "@firebase/rules-unit-testing": "^6.0.0",
     "@playwright/test": "1.65",
+    "firebase-tools": "^15.37.0",
     "jsdom": "^31.0.0",
     "prettier": "^3.8.1",
     "typescript": "~6.0.2",
