@@ -60,6 +60,11 @@ describe('estado del viaje', () => {
     expect(() => transicion(v, 'aceptado', con2)).toThrow('Este viaje ya lo tomó otro conductor');
   });
 
+  it('aceptar un viaje cancelado dice que el pasajero lo canceló', () => {
+    const v = transicion(base(), 'cancelado', pas);
+    expect(() => transicion(v, 'aceptado', con1)).toThrow('El pasajero canceló este viaje');
+  });
+
   it('otro conductor no puede avanzar un viaje ajeno', () => {
     expect(puedeIr(en('aceptado'), 'en_camino', con2)).toBe(false);
     expect(puedeIr(en('aceptado'), 'cancelado', con2)).toBe(false);
