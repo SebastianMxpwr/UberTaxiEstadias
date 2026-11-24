@@ -18,6 +18,7 @@ const CANCELABLES: Estado[] = ['solicitado', 'aceptado', 'en_camino'];
 function motivo(v: Viaje, a: Estado, q: Quien): string | undefined {
   if (a === 'solicitado') return 'Estado de destino no válido';
   if (a === 'aceptado') {
+    if (v.estado === 'cancelado') return 'El pasajero canceló este viaje';
     if (v.estado !== 'solicitado') return 'Este viaje ya lo tomó otro conductor';
     return q.rol === 'conductor' ? undefined : 'Solo un conductor puede aceptar el viaje';
   }
