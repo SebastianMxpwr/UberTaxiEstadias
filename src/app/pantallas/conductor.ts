@@ -1,5 +1,7 @@
 import { Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
-import { IonButton, IonChip, IonContent, IonHeader, IonItem, IonLabel, IonList, IonTitle, IonToolbar, ToastController } from '@ionic/angular';
+import { Aviso } from '../aviso';
+import { Barra } from '../barra';
+import { ResumenViaje } from '../resumen-viaje';
 import { MapaViajeComponent } from '../mapa/mapa-viaje.component';
 import { ALMACEN } from '../viaje/almacen';
 import { Estado, Viaje, puedeIr } from '../viaje/estado';
@@ -11,43 +13,66 @@ const CLAVE_VIAJE = 'traslados:viaje:conductor';
 
 @Component({
   selector: 'app-conductor',
-  imports: [IonContent, IonHeader, IonToolbar, IonTitle, IonButton, IonChip, IonList, IonItem, IonLabel, MapaViajeComponent],
+  imports: [MapaViajeComponent, Barra, ResumenViaje],
   template: `
-    <ion-header><ion-toolbar><ion-title>Conductor</ion-title></ion-toolbar></ion-header>
-    <ion-content class="ion-padding">
-      @if (viaje(); as v) {
-        <app-mapa-viaje [viaje]="v" />
-        <ion-chip data-testid="estado" aria-live="polite">{{ textos[v.estado] }}</ion-chip>
-        <p>{{ v.origen.nombre }} → {{ v.destino.nombre }} · $ {{ v.costo }} MXN</p>
-        @if (accion(); as a) {
-          <ion-button data-testid="accion" expand="block" (click)="ir(v, a.a)">{{ a.texto }}</ion-button>
-        } @else if (v.estado === 'en_camino' || v.estado === 'en_curso') {
-          <p>Conduciendo…</p>
+    <main class="viaje">
+      <app-barra rol="Conductor" />
+      <app-mapa-viaje class="celda-mapa" [viaje]="viaje()" />
+      <section class="hoja">
+        @if (viaje(); as v) {
+          <div class="bloque">
+            <app-resumen-viaje [viaje]="v" [texto]="textos[v.estado]" />
+          </div>
+          @if (v.estado === 'terminado') { <p class="aviso aviso-exito">Viaje terminado.</p> }
+          @if (!accion() && (v.estado === 'en_camino' || v.estado === 'en_curso')) { <p class="texto-suave">Conduciendo…</p> }
+          <div class="acciones-fila">
+            @if (accion(); as a) {
+              <button type="button" class="btn btn-primario" data-testid="accion" (click)="ir(v, a.a)">{{ a.texto }}</button>
+            }
+            @if (puedeCancelar()) {
+              <button type="button" class="btn btn-secundario texto-error" data-testid="cancelar" (click)="ir(v, 'cancelado')">Cancelar</button>
+            }
+            @if (v.estado === 'terminado' || v.estado === 'cancelado') {
+              <button type="button" class="btn btn-primario" data-testid="otro" (click)="otro()">Buscar otro viaje</button>
+            }
+          </div>
+        } @else {
+          <div class="bloque">
+            <div class="titulo-panel">
+              <h2>Viajes disponibles</h2>
+              <span class="etiqueta">{{ solicitados().length }}</span>
+            </div>
+            @if (solicitados().length) {
+              <ul class="lista-viajes">
+                @for (s of solicitados(); track s.id) {
+                  <li class="oferta">
+                    <ul class="lugares">
+                      <li><span class="icono" aria-hidden="true">trip_origin</span>{{ s.origen.nombre }}</li>
+                      <li><span class="icono" aria-hidden="true">location_on</span>{{ s.destino.nombre }}</li>
+                    </ul>
+                    <span class="datos-viaje">
+                      <span class="texto-suave">{{ km(s) }} km</span>
+                      <span class="costo">$ {{ s.costo }}</span>
+                    </span>
+                    <button type="button" class="btn btn-primario" [attr.data-testid]="'aceptar-' + s.id" (click)="aceptar(s)">Aceptar</button>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <div class="vacio">
+                <span class="icono" aria-hidden="true">hourglass_empty</span>
+                <p>Esperando solicitudes…</p>
+              </div>
+            }
+          </div>
         }
-        @if (puedeCancelar()) {
-          <ion-button data-testid="cancelar" color="danger" fill="outline" (click)="ir(v, 'cancelado')">Cancelar</ion-button>
-        }
-        @if (v.estado === 'terminado' || v.estado === 'cancelado') {
-          <ion-button data-testid="otro" (click)="otro()">Buscar otro viaje</ion-button>
-        }
-      } @else {
-        <ion-list>
-          @for (s of solicitados(); track s.id) {
-            <ion-item>
-              <ion-label>{{ s.origen.nombre }} → {{ s.destino.nombre }}<p>$ {{ s.costo }} MXN · {{ km(s) }} km</p></ion-label>
-              <ion-button slot="end" [attr.data-testid]="'aceptar-' + s.id" (click)="aceptar(s)">Aceptar</ion-button>
-            </ion-item>
-          } @empty {
-            <ion-item><ion-label>Sin viajes por ahora</ion-label></ion-item>
-          }
-        </ion-list>
-      }
-    </ion-content>
+      </section>
+    </main>
   `,
 })
 export class Conductor {
   private readonly almacen = inject(ALMACEN);
-  private readonly toast = inject(ToastController);
+  private readonly aviso = inject(Aviso);
   private readonly quien = identidad('conductor');
   private readonly motor = new MotorConductor(this.almacen, this.quien);
 
@@ -92,7 +117,7 @@ export class Conductor {
       await this.almacen.mover(v.id, a, this.quien);
       return true;
     } catch (e) {
-      (await this.toast.create({ message: (e as Error).message, duration: 3000, color: 'danger' })).present();
+      this.aviso.mostrar((e as Error).message);
       return false;
     }
   }
