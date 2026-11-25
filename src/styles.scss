@@ -4,7 +4,241 @@
 @import '@ionic/angular/css/typography.css';
 @import '@ionic/angular/css/utils.bundle.css';
 
+/* ==========================================================================
+   Paleta taxi sobre el neumorfismo de la skill diseno-neumorfico (mismos nombres de variable).
+   Claro = lienzo gris cálido; oscuro = casi negro. Acento: amarillo taxi (botón) y ámbar oscuro (texto).
+   ========================================================================== */
 :root {
-  --ion-color-primary: #ffd600;
-  --ion-color-primary-contrast: #000;
+    --pv-primario: #6b5300;        /* texto e íconos de acento: el amarillo puro no pasa AA sobre gris claro */
+    --pv-primario-hover: #4f3d00;
+    --pv-primario-suave: #f3e7b0;
+    --pv-sobre-primario: #111111;
+    --pv-taxi: #ffd600;
+
+    --pv-fondo: #e9e9e6;
+    --pv-superficie: #e9e9e6;
+    --pv-superficie-alt: #dfdfdb;
+    --pv-borde: rgb(120 120 110 / 25%);
+    --pv-texto: #1f1f1f;
+    --pv-texto-suave: #55554f;
+    --pv-scroll: #c9c9c3;
+
+    --pv-exito: #046c4e;
+    --pv-exito-suave: #d1f0e2;
+    --pv-error: #b02a2a;
+    --pv-error-suave: #f6dcdc;
+
+    --pv-radio: 1rem;
+    --pv-radio-grande: 1.5rem;
+    --pv-sombra: -6px -6px 22px rgb(255 255 255 / 66%), 6px 6px 14px rgb(170 170 160 / 70%);
+    --pv-sombra-alta: -9px -9px 32px rgb(255 255 255 / 70%), 9px 9px 20px rgb(170 170 160 / 80%);
+    --pv-sombra-chip: -3px -3px 13px rgb(255 255 255 / 63%), 3px 3px 8px rgb(170 170 160 / 55%);
+    --pv-sombra-primario: -5px -5px 19px rgb(255 255 255 / 49%), 5px 5px 12px rgb(214 160 0 / 45%);
+    --pv-hundido: inset 4px 4px 8px rgb(170 170 160 / 66%), inset -4px -4px 13px rgb(255 255 255 / 66%);
+    --pv-campo: #e9e9e6;
+    --pv-boton: #e9e9e6;
+    --pv-boton-hover: #e9e9e6;
+    --pv-chip: #e9e9e6;
+    --pv-primario-fondo: linear-gradient(145deg, #ffd600, #f5c400);
+
+    --pv-fuente: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --pv-fuente-titulos: var(--pv-fuente);
+
+    color-scheme: light;
 }
+
+:root[data-tema="oscuro"] {
+    --pv-primario: #ffd600;
+    --pv-primario-hover: #ffe34d;
+    --pv-primario-suave: #2b2500;
+    --pv-sobre-primario: #111111;
+    --pv-primario-fondo: linear-gradient(145deg, #ffd600, #f5c400);
+
+    --pv-fondo: #141414;
+    --pv-superficie: #1b1b1b;
+    --pv-superficie-alt: #222222;
+    --pv-borde: rgb(255 255 255 / 8%);
+    --pv-texto: #f5f5f5;
+    --pv-texto-suave: #b5b5ad;
+    --pv-scroll: #333333;
+
+    --pv-exito: #34d399;
+    --pv-exito-suave: #0f2a24;
+    --pv-error: #fb7185;
+    --pv-error-suave: #2e1a1c;
+
+    --pv-sombra: -5px -5px 22px rgb(255 255 255 / 4%), 6px 6px 16px rgb(0 0 0 / 82%);
+    --pv-sombra-alta: -8px -8px 32px rgb(255 255 255 / 6%), 9px 9px 24px rgb(0 0 0 / 95%);
+    --pv-sombra-chip: -3px -3px 13px rgb(255 255 255 / 4%), 3px 3px 8px rgb(0 0 0 / 77%);
+    --pv-sombra-primario: -4px -4px 19px rgb(255 214 0 / 8%), 5px 5px 14px rgb(0 0 0 / 90%);
+    --pv-hundido: inset 4px 4px 9px rgb(0 0 0 / 90%), inset -3px -3px 13px rgb(255 255 255 / 5%);
+    --pv-campo: #101010;
+    --pv-boton: #202020;
+    --pv-boton-hover: #262626;
+    --pv-chip: #242424;
+
+    --pv-fuente-titulos: "Space Grotesk", "Plus Jakarta Sans", system-ui, sans-serif;
+    color-scheme: dark;
+}
+
+/* ---- Base ---- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+    margin: 0;
+    min-height: 100%;
+    background: var(--pv-fondo);
+    color: var(--pv-texto);
+    font-family: var(--pv-fuente);
+    font-size: 16px;
+    line-height: 1.45;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { margin: 0; line-height: 1.2; font-family: var(--pv-fuente-titulos); letter-spacing: -.01em; }
+h1 { font-size: 1.6rem; font-weight: 800; }
+h2 { font-size: 1.15rem; font-weight: 800; }
+p { margin: 0; }
+ul { margin: 0; padding: 0; list-style: none; }
+
+.icono {
+    font-family: "Material Symbols Rounded";
+    font-size: 1.35em;
+    line-height: 1;
+    font-weight: normal;
+    font-style: normal;
+    display: inline-block;
+    vertical-align: middle;
+    user-select: none;
+    font-variation-settings: "FILL" 0, "wght" 500;
+}
+
+/* ---- Botones ---- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .45rem;
+    min-height: 44px;
+    padding: .55rem 1.1rem;
+    border: 1px solid transparent;
+    border-radius: var(--pv-radio);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color .15s, box-shadow .15s;
+}
+.btn:active:not(:disabled) { box-shadow: var(--pv-hundido); }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+:is(.btn, .opcion, .interruptor):focus-visible { outline: 2px solid var(--pv-primario); outline-offset: 2px; }
+.btn-primario { background: var(--pv-primario-fondo); color: var(--pv-sobre-primario); box-shadow: var(--pv-sombra-primario); }
+.btn-primario:hover:not(:disabled) { filter: brightness(1.08); }
+.btn-secundario { background: var(--pv-boton); color: var(--pv-texto); box-shadow: var(--pv-sombra-chip); }
+.btn-secundario:hover:not(:disabled) { background: var(--pv-boton-hover); color: var(--pv-primario); box-shadow: var(--pv-sombra); }
+.btn-secundario.texto-error:hover:not(:disabled) { color: var(--pv-error); }
+.btn-texto { background: transparent; color: inherit; padding-inline: .6rem; }
+.btn-texto:hover { background: rgb(127 127 127 / 12%); }
+.btn.grande { min-height: 56px; font-size: 1.05rem; width: 100%; }
+.mini { min-width: 44px; padding: .3rem .6rem; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--pv-scroll); border-radius: 999px; }
+
+/* ---- Piezas ---- */
+.tarjeta { background: var(--pv-superficie); border-radius: var(--pv-radio-grande); box-shadow: var(--pv-sombra); padding: 1.25rem; }
+.aviso { padding: .7rem .9rem; border-radius: var(--pv-radio); font-weight: 600; }
+.aviso-error { background: var(--pv-error-suave); color: var(--pv-error); }
+.aviso-exito { background: var(--pv-exito-suave); color: var(--pv-exito); }
+.etiqueta { display: inline-flex; align-items: center; gap: .45rem; padding: .1rem .55rem; border-radius: 999px; font-size: .78rem; font-weight: 700; background: var(--pv-superficie-alt); color: var(--pv-texto-suave); }
+.etiqueta-exito { background: var(--pv-exito-suave); color: var(--pv-exito); }
+.etiqueta-error { background: var(--pv-error-suave); color: var(--pv-error); }
+.texto-suave { color: var(--pv-texto-suave); }
+.texto-error { color: var(--pv-error); font-weight: 700; }
+.led { display: inline-block; flex: none; width: .6rem; height: .6rem; border-radius: 50%; background: currentColor; box-shadow: 0 0 6px currentColor; }
+.vacio { display: flex; flex-direction: column; align-items: center; gap: .5rem; padding: 2rem 1rem; color: var(--pv-texto-suave); text-align: center; }
+.vacio .icono { font-size: 2.4rem; color: var(--pv-primario); }
+.oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.toast { position: fixed; right: 1.25rem; bottom: calc(1.25rem + env(safe-area-inset-bottom)); z-index: 150; max-width: min(420px, calc(100vw - 2rem)); box-shadow: var(--pv-sombra); overflow-wrap: anywhere; }
+@media (max-width: 767px) { .toast { left: 1rem; right: 1rem; max-width: none; } }
+
+/* ---- Interruptor: canal hundido y perilla en ficha ---- */
+.interruptor { position: relative; flex: none; width: 3.4rem; height: 2rem; padding: 0; border: none; border-radius: 999px; background: var(--pv-campo); box-shadow: var(--pv-hundido); cursor: pointer; }
+.interruptor .perilla { position: absolute; top: .25rem; left: .25rem; width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--pv-chip); box-shadow: var(--pv-sombra-chip); transition: transform .2s, background-color .2s; }
+.interruptor[aria-checked="true"] .perilla { transform: translateX(1.4rem); background: var(--pv-taxi); }
+.fila-interruptor { display: flex; align-items: center; justify-content: space-between; gap: 1rem; font-weight: 700; }
+
+/* ---- Barra superior ---- */
+app-barra { display: contents; }
+.barra { display: flex; align-items: center; gap: .6rem; min-height: 56px; padding: calc(.5rem + env(safe-area-inset-top)) 1rem .5rem; background: var(--pv-superficie); box-shadow: var(--pv-sombra-chip); z-index: 3; min-width: 0; }
+.barra img { width: 28px; height: 28px; object-fit: contain; flex: none; }
+.barra .marca { font-size: 1.1rem; }
+.barra .etiqueta { margin-left: .25rem; }
+.barra app-boton-tema { margin-left: auto; }
+
+/* ---- Pantallas de viaje: grid de alto 100dvh; mapa en su celda ---- */
+.viaje { height: 100dvh; width: 100%; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); overflow: hidden; background: var(--pv-fondo); }
+.viaje .barra { grid-row: 1; grid-column: 1; }
+.viaje > .celda-mapa { grid-row: 2; grid-column: 1; min-height: 0; }
+.hoja {
+    grid-row: 2; grid-column: 1; align-self: end; z-index: 2;
+    display: flex; flex-direction: column; gap: .9rem;
+    max-height: 55dvh; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain;
+    padding: 1.1rem 1rem calc(1rem + env(safe-area-inset-bottom));
+    border-radius: var(--pv-radio-grande) var(--pv-radio-grande) 0 0;
+    background: var(--pv-superficie); box-shadow: var(--pv-sombra-alta);
+    overflow-wrap: anywhere;
+}
+.hoja > * { flex: none; }
+.bloque { display: flex; flex-direction: column; gap: .9rem; }
+.titulo-panel { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+
+@media (min-width: 900px) {
+    .viaje { grid-template-columns: clamp(340px, 30vw, 420px) minmax(0, 1fr); }
+    .viaje .barra { grid-column: 1; background: transparent; box-shadow: none; }
+    .hoja { grid-column: 1; align-self: stretch; max-height: none; gap: 1rem; padding: .25rem 1rem 1rem; border-radius: 0; background: transparent; box-shadow: none; }
+    .hoja > .bloque { background: var(--pv-superficie); border-radius: var(--pv-radio-grande); box-shadow: var(--pv-sombra); padding: 1.25rem; }
+    .viaje > .celda-mapa { grid-column: 2; grid-row: 1 / span 2; margin: 1rem 1rem 1rem 0; border-radius: var(--pv-radio-grande); box-shadow: var(--pv-sombra); overflow: hidden; }
+}
+
+/* ---- Contenido del viaje ---- */
+.estado { align-self: flex-start; padding: .45rem .9rem; font-size: 1rem; }
+.estado[data-est="terminado"] { background: var(--pv-exito-suave); color: var(--pv-exito); }
+.estado[data-est="cancelado"] { background: var(--pv-error-suave); color: var(--pv-error); }
+.estado:not([data-est="terminado"], [data-est="cancelado"]) .led { color: var(--pv-taxi); }
+.lugares { display: flex; flex-direction: column; gap: .35rem; min-width: 0; }
+.lugares li { display: flex; align-items: flex-start; gap: .5rem; font-weight: 600; min-width: 0; }
+.lugares .icono { color: var(--pv-primario); flex: none; }
+.costo { font-family: var(--pv-fuente-titulos); font-size: 1.9rem; font-weight: 800; line-height: 1.1; }
+.costo small { font-size: .85rem; font-weight: 600; color: var(--pv-texto-suave); }
+.acciones-fila { display: flex; flex-wrap: wrap; gap: .6rem; }
+.acciones-fila .btn { flex: 1 1 9rem; }
+
+.lista-viajes { display: flex; flex-direction: column; gap: .75rem; }
+.opcion, .oferta { display: flex; align-items: center; justify-content: space-between; gap: .75rem; width: 100%; padding: .9rem 1rem; border: 1px solid transparent; border-radius: var(--pv-radio); background: var(--pv-chip); box-shadow: var(--pv-sombra-chip); color: var(--pv-texto); font: inherit; text-align: left; min-width: 0; }
+.opcion { cursor: pointer; min-height: 44px; }
+.opcion[aria-pressed="true"] { background: var(--pv-campo); box-shadow: var(--pv-hundido); color: var(--pv-primario); }
+.opcion .lugares, .oferta .lugares { flex: 1 1 auto; }
+.datos-viaje { display: flex; flex-direction: column; align-items: flex-end; flex: none; gap: .15rem; }
+.oferta { flex-wrap: wrap; }
+.oferta .btn { flex: 1 1 100%; }
+
+/* ---- Inicio ---- */
+.inicio { position: relative; height: 100%; overflow: auto; display: flex; padding: 1rem; }
+.inicio::before { /* franja a cuadros de taxi, solo decorativa */
+    content: ""; position: absolute; inset: 0 0 auto 0; height: 28px; opacity: .12; pointer-events: none;
+    background:
+        repeating-linear-gradient(90deg, var(--pv-texto) 0 14px, transparent 14px 28px) 0 0 / 100% 14px no-repeat,
+        repeating-linear-gradient(90deg, transparent 0 14px, var(--pv-texto) 14px 28px) 0 14px / 100% 14px no-repeat;
+}
+.inicio-tema { position: absolute; top: calc(.75rem + env(safe-area-inset-top)); right: 1rem; }
+.inicio-tarjeta { width: 100%; max-width: 440px; margin: auto; display: flex; flex-direction: column; align-items: center; gap: 1rem; text-align: center; padding: 2rem 1.5rem; }
+.inicio-tarjeta img { width: 140px; max-width: 60%; height: auto; }
+.inicio-tarjeta .botones { display: flex; flex-direction: column; gap: .75rem; width: 100%; margin-top: .5rem; }
+.inicio-tarjeta h1 { font-size: 2rem; }
+
+/* Coche en el mapa: ficha amarilla con borde negro, legible sobre los dos estilos de mapa. */
+.coche-mapa { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--pv-taxi); color: #111; border: 2px solid #111; box-shadow: 0 2px 8px rgb(0 0 0 / 45%); }
+.coche-mapa .icono { font-size: 22px; }

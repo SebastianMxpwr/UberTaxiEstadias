@@ -4,8 +4,19 @@
   <meta charset="utf-8">
   <title>Traslados</title>
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,0,0&display=block" />
+  <script>
+    window.pvTema = function (cambiar) {
+      var t; try { t = localStorage.getItem('pv.tema'); } catch (e) { }
+      t = t || (matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro');
+      if (cambiar) { t = t === 'oscuro' ? 'claro' : 'oscuro'; try { localStorage.setItem('pv.tema', t); } catch (e) { } }
+      document.documentElement.dataset.tema = t;
+    };
+    pvTema();
+  </script>
 </head>
 <body>
   <app-root></app-root>

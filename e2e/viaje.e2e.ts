@@ -47,11 +47,14 @@ test('dos conductores aceptan a la vez: uno gana y el otro ve el aviso', async (
   await Promise.all(aceptar.map((b) => b.evaluate((el: HTMLElement) => el.click())));
 
   const aviso = (c: typeof c1) => c.getByText('ya lo tomó otro conductor');
-  for (const c of [c1, c2]) await expect(c.getByTestId('estado').or(aviso(c))).toBeVisible();
-
-  const gano = await Promise.all([c1, c2].map((c) => c.getByTestId('estado').isVisible()));
-  expect(gano.filter(Boolean)).toHaveLength(1);
-  const perdedor = gano[0] ? c2 : c1;
-  await expect(aviso(perdedor)).toBeVisible();
+  // Las dos pestañas a la vez: el aviso del perdedor se quita solo a los 4 s.
+  const resultado = (c: typeof c1) => {
+    const gana = c.getByTestId('estado').waitFor({ timeout: 10_000 }).then(() => 'gano');
+    const pierde = aviso(c).waitFor({ timeout: 10_000 }).then(() => 'perdio');
+    gana.catch(() => {}); pierde.catch(() => {});
+    return Promise.any([gana, pierde]);
+  };
+  const r = await Promise.all([c1, c2].map(resultado));
+  expect(r.sort()).toEqual(['gano', 'perdio']);
   await expect(pas.getByTestId('estado')).toHaveText('Conductor asignado');
 });

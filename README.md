@@ -2,9 +2,19 @@
 
 Demo de viaje en vivo entre un pasajero y un conductor. Es la app del conductor de las estadías de 2021 (sigue intacta en la rama `master`), rehecha aquí como primer paso de "Traslados".
 
-| Pasajero en camino | Conductor en viaje |
+| Pasajero eligiendo (375) | Pasajero en camino (375) | Conductor en viaje (375) |
+|---|---|---|
+| ![](docs/capturas/pasajero-eligiendo-375.png) | ![](docs/capturas/pasajero-en-camino-375.png) | ![](docs/capturas/conductor-en-curso-375.png) |
+
+| Inicio (1440) | Pasajero en camino (1440) |
 |---|---|
-| ![Pasajero](docs/capturas/pasajero-en-camino.png) | ![Conductor](docs/capturas/conductor-en-curso.png) |
+| ![](docs/capturas/inicio-1440.png) | ![](docs/capturas/pasajero-en-camino-1440.png) |
+
+| Conductor en viaje, oscuro (1440) | Pasajero en camino (1280x560) |
+|---|---|
+| ![](docs/capturas/conductor-en-curso-1440-oscuro.png) | ![](docs/capturas/pasajero-en-camino-1280x560.png) |
+
+Más: `inicio-375`, `pasajero-eligiendo-1440`, `conductor-en-curso-1440` y `pasajero-en-camino-1440-oscuro` en `docs/capturas/`.
 
 ## Antes (`master`) y después (rama `traslados`)
 
