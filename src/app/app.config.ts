@@ -1,5 +1,5 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withViewTransitions } from '@angular/router';
 import { provideIonicAngular } from '@ionic/angular';
 import { routes } from './app.routes';
 import { ALMACEN } from './viaje/almacen';
@@ -10,8 +10,8 @@ import { AlmacenMemoria } from './viaje/almacen-memoria';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes),
-    provideIonicAngular(),
+    provideRouter(routes, withViewTransitions()),
+    provideIonicAngular({ animated: false }), // las transiciones entre pantallas las hace View Transitions
     { provide: ALMACEN, useFactory: () => (environment.almacen === 'firestore' ? new AlmacenFirestore() : new AlmacenMemoria()) },
   ],
 };

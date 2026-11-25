@@ -2,9 +2,9 @@
 
 Demo de viaje en vivo entre un pasajero y un conductor. Es la app del conductor de las estadías de 2021 (sigue intacta en la rama `master`), rehecha aquí como primer paso de "Traslados".
 
-| Pasajero eligiendo (375) | Pasajero en camino (375) | Conductor en viaje (375) |
+| Pasajero eligiendo (375) | Sugerencias (375) | Pasajero en camino (375) |
 |---|---|---|
-| ![](docs/capturas/pasajero-eligiendo-375.png) | ![](docs/capturas/pasajero-en-camino-375.png) | ![](docs/capturas/conductor-en-curso-375.png) |
+| ![](docs/capturas/pasajero-eligiendo-375.png) | ![](docs/capturas/pasajero-sugerencias-375.png) | ![](docs/capturas/pasajero-en-camino-375.png) |
 
 | Inicio (1440) | Pasajero en camino (1440) |
 |---|---|
@@ -14,7 +14,7 @@ Demo de viaje en vivo entre un pasajero y un conductor. Es la app del conductor 
 |---|---|
 | ![](docs/capturas/conductor-en-curso-1440-oscuro.png) | ![](docs/capturas/pasajero-en-camino-1280x560.png) |
 
-Más: `inicio-375`, `pasajero-eligiendo-1440`, `conductor-en-curso-1440` y `pasajero-en-camino-1440-oscuro` en `docs/capturas/`.
+Más: `conductor-en-curso-375`, `inicio-375`, `pasajero-eligiendo-1440`, `conductor-en-curso-1440` y `pasajero-en-camino-1440-oscuro` en `docs/capturas/`.
 
 ## Antes (`master`) y después (rama `traslados`)
 
@@ -25,7 +25,7 @@ Más: `inicio-375`, `pasajero-eligiendo-1440`, `conductor-en-curso-1440` y `pasa
 | Aceptar un viaje | Escritura directa: dos conductores podían tomar el mismo viaje | Transición validada y transaccional (`navigator.locks`): uno gana, el otro recibe "Este viaje ya lo tomó otro conductor" |
 | Si falla la ruta | El viaje se perdía | Las rutas viajan dentro del viaje y se precalculan (OSRM) |
 | Estados | Sin máquina de estados explícita | Máquina de estados pura y probada (`estado.ts`) |
-| Pruebas | Solo las pruebas de plantilla (Karma / Protractor) | 18 pruebas Vitest, 12 de reglas de Firestore y 2 e2e de dos pestañas (en memoria y en el emulador) |
+| Pruebas | Solo las pruebas de plantilla (Karma / Protractor) | 31 pruebas Vitest, 12 de reglas de Firestore y 3 e2e de dos pestañas (en memoria y en el emulador) |
 
 ## Cómo correrla
 
@@ -36,10 +36,26 @@ npm start
 
 Abre `http://localhost:4200/pasajero` y `http://localhost:4200/conductor` en **dos pestañas del mismo navegador**, o en `/pasajero` activa el interruptor "Conductor simulado". Con `?vel=N` cada tramo (20 s) dura N veces menos.
 
+## Elegir el viaje
+
+En `/pasajero` el viaje se arma de tres formas, y se pueden mezclar:
+
+- **Escribir**: "¿Dónde te recogemos?" y "¿A dónde vas?" sugieren direcciones desde la tercera letra (flechas y Enter para elegir, Esc para cerrar).
+- **Tocar el mapa**: el primer toque pone el origen, el siguiente el destino, y si ya están los dos reemplaza el destino. El punto se nombra con su dirección.
+- **Viajes rápidos**: tres fichas que llenan todo al instante y sin red.
+
+Con origen y destino aparece la ruta de vista previa, los km, los minutos y el costo (`tarifa(km)`: banderazo $35 + $8.50 por km, mínimo $45). "Pedir viaje" se habilita cuando la ruta está calculada. El botón de intercambio invierte origen y destino.
+
+**Servicios externos** (públicos, sin llaves, para uso razonable de una demo): Photon (`photon.komoot.io`, direcciones de OpenStreetMap) y OSRM (`router.project-osrm.org`, rutas). Si fallan, la app avisa ("No se pudo buscar…" / "No se pudo calcular la ruta") y los viajes rápidos siguen funcionando. Las pruebas e2e y las capturas los simulan con `page.route`: no usan la red.
+
+## Sonidos
+
+Se sintetizan con Web Audio (`src/app/sonido.ts`), sin archivos de audio: campanita doble cuando al conductor le llega un viaje nuevo (más vibración en celulares), acorde al asignarse o iniciar el viaje, tres notas descendentes al llegar y un tono grave en los avisos de error. Suenan por el cambio observado del viaje, así que también con el conductor simulado o desde otra pestaña. El navegador no deja sonar hasta que hay un toque o tecla en la página; antes de eso se ignoran sin error. El botón de la campana en la barra los silencia (se guarda en `localStorage`, `traslados:sonido`). Las animaciones se apagan con `prefers-reduced-motion`.
+
 ## Pruebas
 
 - `npm test`: Vitest, una sola corrida (máquina de estados, rutas y almacén).
-- `npm run e2e`: Playwright con el Chrome instalado (`channel: 'chrome'`; no hace falta `playwright install`). Levanta `ng serve --port 4310` y prueba, con dos o tres páginas en un mismo contexto, el viaje completo y la carrera de dos conductores aceptando a la vez.
+- `npm run e2e`: Playwright con el Chrome instalado (`channel: 'chrome'`; no hace falta `playwright install`). Levanta `ng serve --port 4310` y prueba, con dos o tres páginas en un mismo contexto, el viaje completo, la carrera de dos conductores aceptando a la vez y elegir el viaje escribiendo y tocando el mapa (con Photon y OSRM simulados).
 - `npm run test:reglas` y `npm run e2e:firestore`: ver "Modo Firestore (emulador)".
 - `node e2e/capturas.mjs` (con `ng serve --port 4310` corriendo) regenera las capturas de `docs/capturas/`.
 
@@ -48,7 +64,7 @@ Abre `http://localhost:4200/pasajero` y `http://localhost:4200/conductor` en **d
 - `src/app/viaje/estado.ts`: dominio puro (estados, `puedeIr`, `transicion`), sin Angular.
 - `AlmacenViajes` es una interfaz; hay dos adaptadores: `AlmacenMemoria` (localStorage + BroadcastChannel + `storage` + `navigator.locks`, el de por defecto) y `AlmacenFirestore` (colección `trips`, transacciones de Firestore; se elige por `environment`).
 - Mapa con MapLibre GL y el estilo de OpenFreeMap; el worker de maplibre se copia a assets (ver `angular.json`).
-- Rutas OSRM precalculadas en `src/app/viaje/rutas-semilla.json` (`node scripts/generar-rutas.mjs` las regenera); la app nunca llama a OSRM.
+- Rutas OSRM precalculadas en `src/app/viaje/rutas-semilla.json` (`node scripts/generar-rutas.mjs` las regenera); los viajes rápidos usan esas rutas sin red; los viajes elegidos por el pasajero se calculan con OSRM en vivo.
 - Capacitor configurado, sin plataformas android/ios todavía.
 
 ## Modo Firestore (emulador)
@@ -58,7 +74,7 @@ Mismo código, otro almacén: `AlmacenFirestore` contra el emulador local, con e
 - Requisitos: Java 21 (el jar del emulador se descarga solo la primera vez).
 - `npm run emuladores` y, en otra terminal, `npm run start:firestore` (`http://localhost:4200`).
 - `npm run test:reglas`: levanta el emulador y prueba `firestore.rules` (camino feliz, saltos de estado, costo, conductor, posición, borrado).
-- `npm run e2e:firestore`: las mismas 2 pruebas e2e contra Firestore (puerto 4311); la carrera de dos conductores se resuelve con `runTransaction`.
+- `npm run e2e:firestore`: las mismas 3 pruebas e2e contra Firestore (puerto 4311); la carrera de dos conductores se resuelve con `runTransaction`.
 
 ## Límites conocidos
 

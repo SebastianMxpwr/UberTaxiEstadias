@@ -8,7 +8,7 @@ import { Viaje } from './viaje/estado';
     @let v = viaje();
     <p class="etiqueta estado" [attr.data-est]="v.estado">
       <span class="led" aria-hidden="true"></span>
-      <span data-testid="estado" aria-live="polite">{{ texto() }}</span>
+      <span data-testid="estado" aria-live="polite">@for (e of [v.estado]; track e) { <span class="rebote">{{ texto() }}</span> }</span>
     </p>
     <ul class="lugares">
       <li><span class="icono" aria-hidden="true">trip_origin</span>{{ v.origen.nombre }}</li>

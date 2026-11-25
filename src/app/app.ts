@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { IonApp, IonRouterOutlet } from '@ionic/angular';
 import { Aviso } from './aviso';
+import { Sonido } from './sonido';
 
 @Component({
   imports: [IonApp, IonRouterOutlet],
@@ -12,4 +13,5 @@ import { Aviso } from './aviso';
 })
 export class App {
   protected readonly aviso = inject(Aviso);
+  constructor() { inject(Sonido); } // arma desde el inicio el permiso de audio del primer gesto
 }

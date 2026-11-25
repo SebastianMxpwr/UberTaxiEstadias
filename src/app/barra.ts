@@ -1,4 +1,5 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, inject, input, signal } from '@angular/core';
+import { Sonido } from './sonido';
 
 @Component({
   selector: 'app-boton-tema',
@@ -14,13 +15,22 @@ export class BotonTema {
 }
 
 @Component({
+  selector: 'app-boton-sonido',
+  template: `<button type="button" class="btn btn-texto mini" aria-label="Sonido" [attr.aria-pressed]="sonido.activo()" (click)="sonido.alternar()"><span class="icono" aria-hidden="true">{{ sonido.activo() ? 'notifications_active' : 'notifications_off' }}</span></button>`,
+})
+export class BotonSonido {
+  protected readonly sonido = inject(Sonido);
+}
+
+@Component({
   selector: 'app-barra',
-  imports: [BotonTema],
+  imports: [BotonTema, BotonSonido],
   template: `
     <header class="barra">
       <img src="taxi.png" alt="" />
       <strong class="marca">Traslados</strong>
       <span class="etiqueta">{{ rol() }}</span>
+      <app-boton-sonido />
       <app-boton-tema />
     </header>
   `,
