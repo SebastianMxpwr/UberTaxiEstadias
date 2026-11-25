@@ -1,7 +1,0 @@
-{
-  "name": "prueba_maps",
-  "integrations": {
-    "cordova": {}
-  },
-  "type": "angular"
-}
