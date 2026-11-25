@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  // Pon aquí la configuración de tu proyecto de Firebase (no la subas al repo).
   firebaseConfig: {
   apiKey: "TU_APIKEY",
   authDomain: "TU_AUTHDOMAIN",
