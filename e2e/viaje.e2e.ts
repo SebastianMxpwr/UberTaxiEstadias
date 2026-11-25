@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 // Modo Firestore (playwright.firestore.config.ts): base limpia antes de cada prueba.
 test.beforeEach(async ({ request }) => {
@@ -11,6 +11,7 @@ test('pasajero pide, conductor acepta y completa; el coche se mueve', async ({ c
   await pas.goto('/pasajero?vel=20');
   await con.goto('/conductor?vel=20');
 
+  await pas.getByTestId('rapido-0').click();
   await pas.getByTestId('pedir').click();
   await expect(pas.getByTestId('estado')).toHaveText('Buscando conductor');
 
@@ -39,6 +40,7 @@ test('dos conductores aceptan a la vez: uno gana y el otro ve el aviso', async (
   const c2 = await context.newPage();
   await Promise.all([pas.goto('/pasajero'), c1.goto('/conductor'), c2.goto('/conductor')]);
 
+  await pas.getByTestId('rapido-0').click();
   await pas.getByTestId('pedir').click();
   await expect(pas.getByTestId('estado')).toHaveText('Buscando conductor');
   const aceptar = [c1, c2].map((c) => c.locator('[data-testid^="aceptar-"]').first());
@@ -57,4 +59,38 @@ test('dos conductores aceptan a la vez: uno gana y el otro ve el aviso', async (
   const r = await Promise.all([c1, c2].map(resultado));
   expect(r.sort()).toEqual(['gano', 'perdio']);
   await expect(pas.getByTestId('estado')).toHaveText('Conductor asignado');
+});
+
+// Respuestas fijas de Photon, OSRM y del estilo del mapa: la prueba no usa la red.
+const PUNTO = (nombre: string, lng: number, lat: number) => ({ geometry: { coordinates: [lng, lat] }, properties: { name: nombre, district: 'Centro' } });
+export async function simularServicios(page: Page): Promise<void> {
+  await page.route('https://photon.komoot.io/api/**', (r) => r.fulfill({ json: { features: [PUNTO('Zócalo', -99.1332, 19.4326), PUNTO('Zócalo Sur', -99.134, 19.431)] } }));
+  await page.route('https://photon.komoot.io/reverse**', (r) => r.fulfill({ json: { features: [PUNTO('Ángel de la Independencia', -99.1677, 19.427)] } }));
+  await page.route('https://router.project-osrm.org/**', (r) => r.fulfill({
+    json: { code: 'Ok', routes: [{ distance: 5000, duration: 900, geometry: { coordinates: [[-99.1332, 19.4326], [-99.15, 19.43], [-99.1677, 19.427]] } }] },
+  }));
+  await page.route('https://tiles.openfreemap.org/styles/**', (r) => r.fulfill({ json: { version: 8, sources: {}, layers: [] } }));
+}
+
+test('pasajero escribe el origen, toca el mapa para el destino y el conductor ve el viaje', async ({ context }) => {
+  const pas = await context.newPage();
+  const con = await context.newPage();
+  await simularServicios(pas);
+  await pas.goto('/pasajero');
+  await con.goto('/conductor');
+
+  await pas.getByRole('combobox', { name: '¿Dónde te recogemos?' }).fill('Zóc');
+  await pas.getByRole('option', { name: /Zócalo Sur/ }).click();
+  await expect(pas.getByTestId('pedir')).toBeDisabled();
+
+  await pas.locator('.maplibregl-canvas').click({ position: { x: 300, y: 200 } });
+  await expect(pas.getByRole('combobox', { name: '¿A dónde vas?' })).toHaveValue('Ángel de la Independencia');
+  await expect(pas.getByTestId('costo')).toHaveText(/\$ 78/); // 35 + 8.5 × 5 km = 77.5
+  await pas.getByTestId('pedir').click();
+  await expect(pas.getByTestId('estado')).toHaveText('Buscando conductor');
+
+  const oferta = con.locator('.oferta');
+  await expect(oferta).toContainText('Zócalo Sur');
+  await expect(oferta).toContainText('Ángel de la Independencia');
+  await expect(oferta).toContainText('$ 78');
 });

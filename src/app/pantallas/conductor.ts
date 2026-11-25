@@ -1,6 +1,7 @@
-import { Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, effect, inject, signal, untracked } from '@angular/core';
 import { Aviso } from '../aviso';
 import { Barra } from '../barra';
+import { Sonido, hayNuevo, sonidoDeCambio } from '../sonido';
 import { ResumenViaje } from '../resumen-viaje';
 import { MapaViajeComponent } from '../mapa/mapa-viaje.component';
 import { ALMACEN } from '../viaje/almacen';
@@ -44,8 +45,8 @@ const CLAVE_VIAJE = 'traslados:viaje:conductor';
             </div>
             @if (solicitados().length) {
               <ul class="lista-viajes">
-                @for (s of solicitados(); track s.id) {
-                  <li class="oferta">
+                @for (s of solicitados(); track s.id; let i = $index) {
+                  <li class="oferta" [style.--i]="i">
                     <ul class="lugares">
                       <li><span class="icono" aria-hidden="true">trip_origin</span>{{ s.origen.nombre }}</li>
                       <li><span class="icono" aria-hidden="true">location_on</span>{{ s.destino.nombre }}</li>
@@ -73,6 +74,8 @@ const CLAVE_VIAJE = 'traslados:viaje:conductor';
 export class Conductor {
   private readonly almacen = inject(ALMACEN);
   private readonly aviso = inject(Aviso);
+  private readonly sonido = inject(Sonido);
+  private idsPrevios?: string[];
   private readonly quien = identidad('conductor');
   private readonly motor = new MotorConductor(this.almacen, this.quien);
 
@@ -93,12 +96,25 @@ export class Conductor {
   constructor() {
     const destroy = inject(DestroyRef);
     destroy.onDestroy(() => this.motor.destruir());
-    destroy.onDestroy(this.almacen.observarSolicitados((vs) => this.solicitados.set(vs)));
+    destroy.onDestroy(this.almacen.observarSolicitados((vs) => {
+      const ids = vs.map((s) => s.id);
+      if (hayNuevo(this.idsPrevios, ids) && !this.viaje()) {
+        this.sonido.nuevoViaje();
+        navigator.vibrate?.([200, 100, 200]);
+      }
+      this.idsPrevios = ids;
+      this.solicitados.set(vs);
+    }));
     effect((limpiar) => {
       const id = this.viajeId();
       if (!id) return this.viaje.set(undefined);
-      limpiar(this.almacen.observar(id, (v) => { this.viaje.set(v); this.motor.alCambiar(v); }));
+      limpiar(this.almacen.observar(id, (v) => { this.sonarCambio(v); this.viaje.set(v); this.motor.alCambiar(v); }));
     });
+  }
+
+  private sonarCambio(v?: Viaje): void {
+    const s = sonidoDeCambio('conductor', untracked(this.viaje)?.estado, v?.estado);
+    if (s) this.sonido[s]();
   }
 
   protected km(v: Viaje): string {
